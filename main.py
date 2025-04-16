@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import Response
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 import os, requests, json, asyncio, websockets
 
@@ -32,6 +33,8 @@ def process_message(message: str):
         json={"text": reply, "voice_settings": {"stability": 0.5, "similarity_boost": 0.75}}
     )
 
+    # Save audio response
+    os.makedirs("static", exist_ok=True)
     with open("static/response.mp3", "wb") as f:
         f.write(tts.content)
 
@@ -61,7 +64,5 @@ async def media_stream(websocket: WebSocket):
         # Start listening
         await receive_from_assemblyai()
 
-
-    from fastapi.staticfiles import StaticFiles
-
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+# 👇 Make static files like response.mp3 accessible at /static/
+app.mount("/static", StaticFiles(directory="static"), name="static")
