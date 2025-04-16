@@ -60,3 +60,8 @@ async def media_stream(websocket: WebSocket):
 
         # Start listening
         await receive_from_assemblyai()
+
+
+    from fastapi.staticfiles import StaticFiles
+
+    app.mount("/static", StaticFiles(directory="static"), name="static")
